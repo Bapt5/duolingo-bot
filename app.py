@@ -2,8 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 from random import randint
+from deep_translator import GoogleTranslator
 
 
 def passe(temps):
@@ -13,6 +15,8 @@ def passe(temps):
 
 
 def newTeacher():
+    driver.get("https://www.duolingo.com/stories")
+    time.sleep(4)
     driver.find_element_by_xpath(
         "//a[@href='/stories/en-fr-new-teacher']").click()
     try:
@@ -218,6 +222,8 @@ def newTeacher():
 
 
 def party():
+    driver.get("https://www.duolingo.com/stories")
+    time.sleep(4)
     driver.find_element_by_xpath(
         "//a[@href='/stories/en-fr-the-party-1']").click()
     try:
@@ -417,20 +423,88 @@ def party():
     time.sleep(3)
 
 
+def enter():
+    driver.find_element_by_xpath("//html/body").send_keys(Keys.ENTER)
+
+
+def lecon():
+    driver.get("https://www.duolingo.com/learn")
+    time.sleep(2)
+    lecons = driver.find_elements_by_xpath(
+        "//*[contains(@data-test, 'skill')]")
+    for lecon in lecons:
+        if lecon.get_attribute("data-test") == "skill":
+            lecon.click()
+            break
+    driver.find_element_by_xpath(
+        "//button[text()='COMMENCER']").click()
+
+    time.sleep(2)
+    title = driver.find_element_by_xpath(
+        "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
+    # detecte l'exercice
+    # passe si c un exercice de comprehension ou d'expression orale
+    if 'Prononce' in title:
+        driver.find_element_by_xpath(
+            "//*[contains(@data-test, 'player-skip')]").click()
+    elif 'entend' in title:
+        driver.find_element_by_xpath(
+            "//*[contains(@data-test, 'player-skip')]").click()
+    # exercice ecris
+    elif 'Écris' in title:
+        # active le clavier si besoin
+        toggleKeyboard = driver.find_elements_by_xpath(
+            "//*[contains(@data-test, 'player-toggle-keyboard')]")
+        if len(toggleKeyboard) > 0:
+            if toggleKeyboard[0].find_element_by_xpath("div/div[2]").get_attribute('innerHTML') == 'Utiliser le clavier':
+                toggleKeyboard[0].click()
+
+        # repère la phrase à traduire
+        elementsPhrase = driver.find_elements_by_xpath(
+            "//*[contains(@data-test, 'hint-token')]")
+        phrase = ''
+        for element in elementsPhrase:
+            phrase += element.get_attribute('innerHTML')
+        # cherhe l'input
+        input = driver.find_element_by_xpath(
+            "//*[contains(@data-test, 'challenge-translate-input')]")
+        langue = input.get_attribute("lang")
+        result = GoogleTranslator(
+            source='auto', target=langue).translate(phrase)
+        input.send_keys(result)
+        enter()
+        # Écris
+        # trouver la phrase //*[contains(@data-test, 'hint-token')]
+        # //*[contains(@data-test, 'challenge-translate-input')] input reponse
+        # langue attribut lang
+        # Écris «»
+        # trouve la phrase entre guillemet
+        # //*[contains(@data-test, 'challenge-translate-input')] input reponse
+        # langue placeholder
+
+        # Complète
+        # plus compliqué //*[contains(@data-test, 'player-toggle-keyboard')]
+        # puis écris
+
+        # detect correct //*[contains(@class, 'kVhsm')]
+        # correct //*[contains(@data-test, 'blame blame-correct')]
+        # error //*[contains(@data-test, 'blame blame-incorrect')]
+        # recup reponse //*[contains(@class, '_1UqAr')]/span/span
+
+
 options = webdriver.ChromeOptions()
 options.add_argument('--user-data-dir=./data')
 driver = webdriver.Chrome(options=options)
 
 
-driver.get("https://www.duolingo.com/stories")
+driver.get("https://www.duolingo.com/")
 wait = WebDriverWait(driver, 600)
 
 input('Tapes sur entrez quand tu es connecté')
+lecon()
 
-while True:
-    try:
-        party()
-    except:
-        driver.get("https://www.duolingo.com/stories")
-        time.sleep(4)
-        pass
+# while True:
+#     try:
+#         lecon()
+#     except:
+#         pass

@@ -436,7 +436,7 @@ def lecon():
     time.sleep(2)
     titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
     if not 'anglais' in titre:
-        raise Exception("Il faut que la langue choisis soit l'anglais")
+        raise Exception("The chosen language must be english")
 
     lecons = driver.find_elements_by_xpath(
         "//*[contains(@data-test, 'skill')]")

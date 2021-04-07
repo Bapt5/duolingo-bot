@@ -4,8 +4,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
-from random import randint
+import random
 from deep_translator import GoogleTranslator
+import pickle
+import os
 
 
 def passe(temps):
@@ -428,83 +430,145 @@ def enter():
 
 
 def lecon():
+    global corrections
+
     driver.get("https://www.duolingo.com/learn")
     time.sleep(2)
     lecons = driver.find_elements_by_xpath(
         "//*[contains(@data-test, 'skill')]")
-    for lecon in lecons:
+    for i in lecons:
+        lecon = random.choice(lecons)
         if lecon.get_attribute("data-test") == "skill":
             lecon.click()
             break
+    time.sleep(1)
     driver.find_element_by_xpath(
         "//button[text()='COMMENCER']").click()
+    time.sleep(1)
 
-    time.sleep(2)
-    title = driver.find_element_by_xpath(
-        "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
-    # detecte l'exercice
-    # passe si c un exercice de comprehension ou d'expression orale
-    if 'Prononce' in title:
-        driver.find_element_by_xpath(
-            "//*[contains(@data-test, 'player-skip')]").click()
-    elif 'entend' in title:
-        driver.find_element_by_xpath(
-            "//*[contains(@data-test, 'player-skip')]").click()
-    # exercice ecris
-    elif 'Écris' in title:
-        # active le clavier si besoin
-        toggleKeyboard = driver.find_elements_by_xpath(
-            "//*[contains(@data-test, 'player-toggle-keyboard')]")
-        if len(toggleKeyboard) > 0:
-            if toggleKeyboard[0].find_element_by_xpath("div/div[2]").get_attribute('innerHTML') == 'Utiliser le clavier':
-                toggleKeyboard[0].click()
+    while True:
+        time.sleep(0.5)
+        try:
+            title = driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
+        except:
+            pass
+        # detecte l'exercice
+        # passe si c un exercice de comprehension ou d'expression orale
+        if 'Prononce' in title:
+            driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'player-skip')]").click()
+        elif 'entends' in title:
+            driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'player-skip')]").click()
+        # exercice ecris
+        elif 'Écris' in title:
+            # active le clavier si besoin
+            toggleKeyboard = driver.find_elements_by_xpath(
+                "//*[contains(@data-test, 'player-toggle-keyboard')]")
+            if len(toggleKeyboard) > 0:
+                if toggleKeyboard[0].find_element_by_xpath("div/div[2]").get_attribute('innerHTML') == 'Utiliser le clavier':
+                    toggleKeyboard[0].click()
 
-        # repère la phrase à traduire
-        elementsPhrase = driver.find_elements_by_xpath(
-            "//*[contains(@data-test, 'hint-token')]")
-        phrase = ''
-        for element in elementsPhrase:
-            phrase += element.get_attribute('innerHTML')
-        # cherhe l'input
-        input = driver.find_element_by_xpath(
-            "//*[contains(@data-test, 'challenge-translate-input')]")
-        langue = input.get_attribute("lang")
-        result = GoogleTranslator(
-            source='auto', target=langue).translate(phrase)
-        input.send_keys(result)
-        enter()
-        # Écris
-        # trouver la phrase //*[contains(@data-test, 'hint-token')]
-        # //*[contains(@data-test, 'challenge-translate-input')] input reponse
-        # langue attribut lang
-        # Écris «»
-        # trouve la phrase entre guillemet
-        # //*[contains(@data-test, 'challenge-translate-input')] input reponse
-        # langue placeholder
+            # repère la phrase à traduire
+            elementsPhrase = driver.find_elements_by_xpath(
+                "//*[contains(@data-test, 'hint-token')]")
+            phrase = ''
+            for element in elementsPhrase:
+                phrase += element.get_attribute('innerHTML')
+            # cherhe l'input
+            input = driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'challenge-translate-input')]")
+            # si la phrase est deja dans le dictionnaire
+            if phrase in corrections:
+                result = corrections[phrase]
+            else:
+                # cherche la langue
+                langue = input.get_attribute("lang")
+                # traduction
+                result = GoogleTranslator(
+                    source='auto', target=langue).translate(phrase)
+            # renvoie du resultat
+            input.send_keys(result)
+            enter()
+        elif 'Écris' in title and '«' in title:
+            phrase = title[title.find('«') + 1: title.find('»')]
+            # cherhe l'input
+            input = driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'challenge-translate-input')]")
+            # si la phrase est deja dans le dictionnaire
+            if phrase in corrections:
+                result = corrections[phrase]
+            else:
+                # cherche la langue
+                chaineLangue = input.get_attribute("placeholder")
+                if 'anglais' in chaineLangue:
+                    langue = 'en'
+                elif 'français' in chaineLangue:
+                    langue = 'fr'
+                # traduction
+                result = GoogleTranslator(
+                    source='auto', target=langue).translate(phrase)
+            # renvoie du resultat
+            input.send_keys(result)
+            enter()
+        elif 'Complète' in title:
+            driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'player-toggle-keyboard')]").click()
+            pass
+        elif 'Choisis' in title:
+            break
+        # si c'est la fin
+        elif len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
+            enter()
+            break
+        else:
+            enter()
+            pass
 
-        # Complète
-        # plus compliqué //*[contains(@data-test, 'player-toggle-keyboard')]
-        # puis écris
-
-        # detect correct //*[contains(@class, 'kVhsm')]
-        # correct //*[contains(@data-test, 'blame blame-correct')]
-        # error //*[contains(@data-test, 'blame blame-incorrect')]
-        # recup reponse //*[contains(@class, '_1UqAr')]/span/span
+        # verifie si c'est correct
+        incorrect = driver.find_elements_by_xpath(
+            "//*[contains(@data-test, 'blame blame-incorrect')]")
+        correct = driver.find_elements_by_xpath(
+            "//*[contains(@data-test, 'blame blame-correct')]")
+        # si c'est incorrect
+        if len(incorrect) > 0:
+            correctionDiv = driver.find_element_by_xpath(
+                "//*[contains(@class, '_1UqAr ')]")
+            correctionSpan = correctionDiv.find_elements_by_xpath(
+                "//span/span")
+            # on récupère la phrase
+            correction = correctionDiv.get_attribute('innerHTML')
+            if 'span' in correction:
+                correction = ''
+                for element in correctionSpan:
+                    correction += element.get_attribute('innerHTML')
+            # on l'ajoute dans le dictionnaire
+            corrections[phrase] = correction
+            pickle.dump(corrections, open("corrections.pkl", "wb"))
+            enter()
+        elif len(correct) > 0:
+            enter()
 
 
 options = webdriver.ChromeOptions()
 options.add_argument('--user-data-dir=./data')
 driver = webdriver.Chrome(options=options)
 
+if os.path.isfile("corrections.pkl"):
+    corrections = pickle.load(open("corrections.pkl", "rb"))
+else:
+    corrections = {}
+
 
 driver.get("https://www.duolingo.com/")
 wait = WebDriverWait(driver, 600)
 
 input('Tapes sur entrez quand tu es connecté')
-lecon()
 
-# while True:
-#     try:
-#         lecon()
-#     except:
-#         pass
+
+while True:
+    try:
+        lecon()
+    except:
+        pass

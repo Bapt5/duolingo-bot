@@ -585,7 +585,7 @@ if os.path.isfile("exported-cookies.json"):
             driver.add_cookie(cookie)
         driver.get("https://www.duolingo.com/")
 
-input(Fore.GREEN + 'Press enter when you are logged in' + Style.RESET_ALL)
+input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
 
 
 while True:

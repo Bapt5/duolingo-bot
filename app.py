@@ -8,6 +8,7 @@ import random
 from deep_translator import GoogleTranslator
 import pickle
 import os
+import json
 
 
 def passe(temps):
@@ -105,119 +106,119 @@ def newTeacher():
         driver.find_element_by_xpath(
             "//button[text()='really']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='mauvais']").click()
         driver.find_element_by_xpath(
             "//button[text()='bad']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='students']").click()
         driver.find_element_by_xpath(
             "//button[text()='élèves']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='dur']").click()
         driver.find_element_by_xpath(
             "//button[text()='hard']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='dire']").click()
         driver.find_element_by_xpath(
             "//button[text()='to tell']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='détestent']").click()
         driver.find_element_by_xpath(
             "//button[text()='hate']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='teacher']").click()
         driver.find_element_by_xpath(
             "//button[text()='professeur']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='bureau']").click()
         driver.find_element_by_xpath(
             "//button[text()='office']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='parliez']").click()
         driver.find_element_by_xpath(
             "//button[text()='were talking']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='loudly']").click()
         driver.find_element_by_xpath(
             "//button[text()='fort']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='travail']").click()
         driver.find_element_by_xpath(
             "//button[text()='job']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='teacher']").click()
         driver.find_element_by_xpath(
             "//button[text()='professeur']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='you're right']").click()
         driver.find_element_by_xpath(
             "//button[text()='vous avez raison']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='vous avez raison']").click()
         driver.find_element_by_xpath(
             "//button[text()='you're right']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='boss']").click()
         driver.find_element_by_xpath(
             "//button[text()='patronne']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='frappe à']").click()
         driver.find_element_by_xpath(
             "//button[text()='knocks on']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='quitter']").click()
         driver.find_element_by_xpath(
             "//button[text()='to leave']").click()
     except:
-        print()
+        None
     passe(1)  # paires
     passe(8)  # fin
     time.sleep(3)
@@ -257,7 +258,7 @@ def party():
         driver.find_element_by_xpath(
             "//*[contains(@class, '_2l5CB')]//span[text()='factory']").click()
     except:
-        print()
+        None
     passe(1)  # reponse but it's an old factory
 
     passe(3)  # well it's the adress Josh gave me
@@ -321,105 +322,105 @@ def party():
         driver.find_element_by_xpath(
             "//button[text()='d'accord']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='night']").click()
         driver.find_element_by_xpath(
             "//button[text()='soir']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='soudain']").click()
         driver.find_element_by_xpath(
             "//button[text()='suddenly']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='quittent']").click()
         driver.find_element_by_xpath(
             "//button[text()='leave']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='fifteen']").click()
         driver.find_element_by_xpath(
             "//button[text()='quinze']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='address']").click()
         driver.find_element_by_xpath(
             "//button[text()='adresse']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='gave']").click()
         driver.find_element_by_xpath(
             "//button[text()='a donné']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='dangerous']").click()
         driver.find_element_by_xpath(
             "//button[text()='dangereuses']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='building']").click()
         driver.find_element_by_xpath(
             "//button[text()='bâtiment']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='scary']").click()
         driver.find_element_by_xpath(
             "//button[text()='effrayant']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='car']").click()
         driver.find_element_by_xpath(
             "//button[text()='voiture']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='de nouveau']").click()
         driver.find_element_by_xpath(
             "//button[text()='again']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='party']").click()
         driver.find_element_by_xpath(
             "//button[text()='fête']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='door']").click()
         driver.find_element_by_xpath(
             "//button[text()='porte']").click()
     except:
-        print()
+        None
     try:
         driver.find_element_by_xpath(
             "//button[text()='usine']").click()
         driver.find_element_by_xpath(
             "//button[text()='factory']").click()
     except:
-        print()
+        None
     passe(1)  # paires
     passe(8)  # fin
     time.sleep(3)
@@ -568,7 +569,19 @@ else:
 driver.get("https://www.duolingo.com/")
 wait = WebDriverWait(driver, 600)
 
-input('Tapes sur entrez quand tu es connecté')
+print('If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme')
+
+if os.path.isfile("exported-cookies.json"):
+    with open('exported-cookies.json') as json_file:
+        cookies = json.loads(json_file.read())
+        for cookie in cookies:
+            for key in cookie.copy():
+                if key != 'name' and key != 'value':
+                    cookie.pop(key)
+            driver.add_cookie(cookie)
+        driver.get("https://www.duolingo.com/")
+
+input('Press enter when you are logged in')
 
 
 while True:

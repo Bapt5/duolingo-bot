@@ -464,13 +464,16 @@ def lecon():
         # detecte l'exercice
         # passe si c un exercice de comprehension ou d'expression orale
         if 'Prononce' in title:
+            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-skip')]").click()
         elif 'entends' in title:
+            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-skip')]").click()
         # exercice ecris
         elif 'Écris' in title:
+            enter()
             # active le clavier si besoin
             toggleKeyboard = driver.find_elements_by_xpath(
                 "//*[contains(@data-test, 'player-toggle-keyboard')]")
@@ -500,6 +503,7 @@ def lecon():
             input.send_keys(result)
             enter()
         elif 'Écris' in title and '«' in title:
+            enter()
             phrase = title[title.find('«') + 1: title.find('»')]
             # cherhe l'input
             input = driver.find_element_by_xpath(
@@ -521,10 +525,12 @@ def lecon():
             input.send_keys(result)
             enter()
         elif 'Complète' in title:
+            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-toggle-keyboard')]").click()
             pass
         elif 'Choisis' in title:
+            enter()
             break
         # si c'est la fin
         elif len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:

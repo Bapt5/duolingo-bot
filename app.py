@@ -9,6 +9,9 @@ from deep_translator import GoogleTranslator
 import pickle
 import os
 import json
+import colorama
+from colorama import Fore
+from colorama import Style
 
 
 def passe(temps):
@@ -565,11 +568,12 @@ if os.path.isfile("corrections.pkl"):
 else:
     corrections = {}
 
+colorama.init()
 
 driver.get("https://www.duolingo.com/")
 wait = WebDriverWait(driver, 600)
 
-print('If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme')
+print(Fore.YELLOW + 'If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme' + Style.RESET_ALL)
 
 if os.path.isfile("exported-cookies.json"):
     with open('exported-cookies.json') as json_file:
@@ -581,7 +585,7 @@ if os.path.isfile("exported-cookies.json"):
             driver.add_cookie(cookie)
         driver.get("https://www.duolingo.com/")
 
-input('Press enter when you are logged in')
+input(Fore.GREEN + 'Press enter when you are logged in' + Style.RESET_ALL)
 
 
 while True:

@@ -1,3 +1,4 @@
 selenium
 deep-translator
 pickle
+colorama

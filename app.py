@@ -589,3 +589,15 @@ while True:
         lecon()
     except:
         pass
+
+# while True:
+#     try:
+#         newTeacher()
+#     except:
+#         pass
+#
+# while True:
+#     try:
+#         party()
+#     except:
+#         pass

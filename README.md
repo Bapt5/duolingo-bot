@@ -5,6 +5,7 @@ A bot to solve duolingo lessons (only from french to english for the moment)
 * python >= 3.7
 * `pip install -r requirements.txt`
 * the latest version of Google Chrome
+* Disable the messages of encouragement
 
 ## Usage
 `python3 app.py`

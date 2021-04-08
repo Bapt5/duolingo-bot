@@ -438,6 +438,11 @@ def lecon():
 
     driver.get("https://www.duolingo.com/learn")
     time.sleep(2)
+
+    amis = driver.find_elements_by_xpath("//span[text()='Non merci']")
+    if(len(amis) > 0):
+        amis[0].click()
+
     titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
     if not 'anglais' in titre:
         raise Exception("The chosen language must be english")

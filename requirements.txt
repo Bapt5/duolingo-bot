@@ -1,4 +1,4 @@
 selenium
 deep-translator
-pickle
 colorama
+pickle-mixin

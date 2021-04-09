@@ -5,17 +5,17 @@ A bot to solve duolingo lessons (only from french to english for the moment)
 * python >= 3.7
 * `pip install -r requirements.txt`
 * the latest version of Google Chrome
-* Disable the messages of encouragement
 
 ## Usage
-`python3 app.py`
+* Disable the messages of encouragement
+* `python3 app.py`
 
 ## Connection with Google or Facebook
 1. Install [this extension](https://chrome.google.com/webstore/detail/cookiemanager-cookie-edit/hdhngoamekjhmnpenphenpaiindoinpo) in Google Chrome
 2. Go to [Duolingo](www.duolingo.com)
 3. Open Cookie Manager - Cookie Edit
 4. Select all the cookie
-5. Click on export 
+5. Click on export
 6. It will download a file move this file in the folder of the bot
 
 ## To-do

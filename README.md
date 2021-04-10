@@ -17,6 +17,3 @@ A bot to solve duolingo lessons (only from french to english for the moment)
 4. Select all the cookie
 5. Click on export
 6. It will download a file move this file in the folder of the bot
-
-## To-do
-* Resolve question when we have to choise an answer

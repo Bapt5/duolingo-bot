@@ -455,8 +455,12 @@ def lecon():
             lecon.click()
             break
     time.sleep(1)
-    driver.find_element_by_xpath(
-        "//button[text()='COMMENCER']").click()
+    try:
+        driver.find_element_by_xpath(
+            "//button[text()='COMMENCER']").click()
+    except:
+        driver.find_element_by_xpath(
+            "//button[text()='Réviser']").click()
     time.sleep(1)
 
     while True:
@@ -465,7 +469,9 @@ def lecon():
             title = driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
         except:
-            pass
+            time.sleep(1)
+            title = driver.find_element_by_xpath(
+                "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
         # detecte l'exercice
         # passe si c un exercice de comprehension ou d'expression orale
         if 'Prononce' in title:
@@ -477,7 +483,7 @@ def lecon():
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-skip')]").click()
         # exercice ecris
-        elif 'Écris' in title:
+        elif 'Écris' in title and not '«' in title:
             enter()
             # active le clavier si besoin
             toggleKeyboard = driver.find_elements_by_xpath(
@@ -509,10 +515,10 @@ def lecon():
             enter()
         elif 'Écris' in title and '«' in title:
             enter()
-            phrase = title[title.find('«') + 1: title.find('»')]
+            phrase = title[title.find('«') + 7: title.find('»') - 6]
             # cherhe l'input
             input = driver.find_element_by_xpath(
-                "//*[contains(@data-test, 'challenge-translate-input')]")
+                "//*[contains(@data-test, 'challenge-text-input')]")  # !!!si erreur challenge translate input
             # si la phrase est deja dans le dictionnaire
             if phrase in corrections:
                 result = corrections[phrase]
@@ -536,7 +542,28 @@ def lecon():
             pass
         elif 'Choisis' in title:
             enter()
-            break
+            # si le choix est pour completer une phrase
+            if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'challenge-form-prompt')]")) > 0:
+                phrase = driver.find_element_by_xpath(
+                    "//*[contains(@data-test, 'challenge-form-prompt')]").get_attribute("data-prompt")
+            # si le choix est donner la traduction
+            elif len(driver.find_elements_by_xpath("//*[contains(@class, '_3-JBe')]")) > 0:
+                phrase = driver.find_element_by_xpath(
+                    "//*[contains(@class, '_3-JBe')]").get_attribute("innerHTML")
+            # si la phrase est deja dans le dictionnaire
+            if phrase in corrections:
+                # on essaie de cliquer sur cette phrase
+                try:
+                    driver.find_element_by_xpath(
+                        f"//*[contains(@data-test, 'challenge-judge-text') and text()={corrections[phrase]}]").click()
+                # sinon on clique sur une réponse aléatoire
+                except:
+                    random.choice(driver.find_elements_by_xpath(
+                        "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+            else:
+                # on clique sur une réponse aléatoire
+                random.choice(driver.find_elements_by_xpath(
+                    "//*[contains(@data-test, 'challenge-judge-text')]")).click()
         # si c'est la fin
         elif len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
             enter()
@@ -597,7 +624,7 @@ if os.path.isfile("exported-cookies.json"):
         driver.get("https://www.duolingo.com/")
 
 input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
-
+lecon()
 
 while True:
     try:

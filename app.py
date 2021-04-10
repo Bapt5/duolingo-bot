@@ -439,14 +439,17 @@ def lecon():
     driver.get("https://www.duolingo.com/learn")
     time.sleep(2)
 
+    # si il nous propose de partager a nos amis clique sur non merci
     amis = driver.find_elements_by_xpath("//span[text()='Non merci']")
     if(len(amis) > 0):
         amis[0].click()
 
+    # verifie que le language choisi est compatible
     titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
     if not 'anglais' in titre:
         raise Exception("The chosen language must be english")
 
+    # choisi aléatoirement une lecon
     lecons = driver.find_elements_by_xpath(
         "//*[contains(@data-test, 'skill')]")
     for i in lecons:
@@ -455,6 +458,7 @@ def lecon():
             lecon.click()
             break
     time.sleep(1)
+    # clique sur commencer ou reviser
     try:
         driver.find_element_by_xpath(
             "//button[text()='COMMENCER']").click()
@@ -465,6 +469,7 @@ def lecon():
 
     while True:
         time.sleep(0.5)
+        # récupère le titre de l'exercice
         try:
             title = driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
@@ -624,7 +629,6 @@ if os.path.isfile("exported-cookies.json"):
         driver.get("https://www.duolingo.com/")
 
 input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
-lecon()
 
 while True:
     try:

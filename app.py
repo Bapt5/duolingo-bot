@@ -21,6 +21,8 @@ def passe(temps):
 
 
 def newTeacher():
+    global countLesson
+
     driver.get("https://www.duolingo.com/stories")
     time.sleep(4)
     driver.find_element_by_xpath(
@@ -224,10 +226,13 @@ def newTeacher():
         None
     passe(1)  # paires
     passe(8)  # fin
+    countLesson += 1
     time.sleep(3)
 
 
 def party():
+    global countLesson
+
     driver.get("https://www.duolingo.com/stories")
     time.sleep(4)
     driver.find_element_by_xpath(
@@ -426,6 +431,7 @@ def party():
         None
     passe(1)  # paires
     passe(8)  # fin
+    countLesson += 1
     time.sleep(3)
 
 
@@ -434,6 +440,7 @@ def enter():
 
 
 def lecon():
+    global countLesson
     global corrections
 
     driver.get("https://www.duolingo.com/learn")
@@ -447,7 +454,8 @@ def lecon():
     # verifie que le language choisi est compatible
     titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
     if not 'anglais' in titre:
-        raise Exception("The chosen language must be english")
+        raise Exception(
+            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
 
     # choisi aléatoirement une lecon
     lecons = driver.find_elements_by_xpath(
@@ -572,6 +580,7 @@ def lecon():
         # si c'est la fin
         elif len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
             enter()
+            countLesson += 1
             break
         else:
             enter()
@@ -630,20 +639,45 @@ if os.path.isfile("exported-cookies.json"):
 
 input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
 
-while True:
-    try:
-        lecon()
-    except:
-        pass
+choixExo = input(
+    Fore.BLUE + 'Press\n• 1 to resolve lessons\n• 2 to resolve the story named "Le nouveau professeur"\n• 3 to resolve the story named "La fête 1/2"' + Style.RESET_ALL)
 
-# while True:
-#     try:
-#         newTeacher()
-#     except:
-#         pass
-#
-# while True:
-#     try:
-#         party()
-#     except:
-#         pass
+if choixExo in '123':
+    choixExo = int(choixExo)
+else:
+    raise Exception(Fore.RED + 'Please choose 1,2 or 3' + Style.RESET_ALL)
+
+repeat = input(
+    Fore.BLUE + 'Press enter to resolve lessons endlessly or type the number of lessons you want to do' + Style.RESET_ALL)
+
+if repeat == '':
+    repeat = -3
+else:
+    try:
+        repeat = int(repeat)
+    except:
+        raise Exception(
+            Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
+
+countLesson = 0
+
+if choixExo == 1:
+    while countLesson != repeat:
+        try:
+            lecon()
+        except:
+            pass
+
+elif choixExo == 2:
+    while countLesson != repeat:
+        try:
+            newTeacher()
+        except:
+            pass
+
+elif choixExo == 3:
+    while countLesson != repeat:
+        try:
+            party()
+        except:
+            pass

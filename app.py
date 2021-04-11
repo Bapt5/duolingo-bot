@@ -477,27 +477,34 @@ def lecon():
 
     while True:
         time.sleep(0.5)
-        # récupère le titre de l'exercice
-        try:
-            title = driver.find_element_by_xpath(
-                "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
-        except:
-            time.sleep(1)
-            title = driver.find_element_by_xpath(
-                "//*[contains(@data-test, 'challenge-header')]/span").get_attribute('innerHTML')
+        # si c'est la fin
+        if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
+            enter()
+            countLesson += 1
+            break
+
+        while True:
+            # récupère le titre de l'exercice
+            title = driver.find_elements_by_xpath(
+                "//*[contains(@data-test, 'challenge-header')]/span")
+            if len(title) == 1:
+                title = title[0].get_attribute('innerHTML')
+                break
+            # si le titre et pas detecter on tapes sur entrer car il y a un msg d'encouragement
+            else:
+                enter()
+                time.sleep(0.5)
+
         # detecte l'exercice
         # passe si c un exercice de comprehension ou d'expression orale
         if 'Prononce' in title:
-            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-skip')]").click()
         elif 'entends' in title:
-            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-skip')]").click()
         # exercice ecris
         elif 'Écris' in title and not '«' in title:
-            enter()
             # active le clavier si besoin
             toggleKeyboard = driver.find_elements_by_xpath(
                 "//*[contains(@data-test, 'player-toggle-keyboard')]")
@@ -527,7 +534,6 @@ def lecon():
             input.send_keys(result)
             enter()
         elif 'Écris' in title and '«' in title:
-            enter()
             phrase = title[title.find('«') + 7: title.find('»') - 6]
             # cherhe l'input
             input = driver.find_element_by_xpath(
@@ -549,12 +555,10 @@ def lecon():
             input.send_keys(result)
             enter()
         elif 'Complète' in title:
-            enter()
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-toggle-keyboard')]").click()
             pass
         elif 'Choisis' in title:
-            enter()
             # si le choix est pour completer une phrase
             if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'challenge-form-prompt')]")) > 0:
                 phrase = driver.find_element_by_xpath(
@@ -577,11 +581,6 @@ def lecon():
                 # on clique sur une réponse aléatoire
                 random.choice(driver.find_elements_by_xpath(
                     "//*[contains(@data-test, 'challenge-judge-text')]")).click()
-        # si c'est la fin
-        elif len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
-            enter()
-            countLesson += 1
-            break
         else:
             enter()
             pass

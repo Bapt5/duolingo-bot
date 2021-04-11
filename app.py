@@ -12,6 +12,7 @@ import json
 import colorama
 from colorama import Fore
 from colorama import Style
+import string
 
 
 def passe(temps):
@@ -602,30 +603,42 @@ def lecon():
                 correction = ''
                 for element in correctionSpan:
                     correction += element.get_attribute('innerHTML')
+            # on enlève tous les espaces et les ponctuations avant
+            for i in range(len(reponse)):
+                if reponse[i] in string.ascii_letters:
+                    first_letter = i
+                    break
+            reponse = reponse[first_letter:len(reponse) - 1]
             # on l'ajoute dans le dictionnaire
-            corrections[phrase] = correction
+            corrections[question] = reponse
             pickle.dump(corrections, open("corrections.pkl", "wb"))
             enter()
         elif len(correct) > 0:
             enter()
 
 
+# demarre chromedriver
 options = webdriver.ChromeOptions()
 options.add_argument('--user-data-dir=./data')
 driver = webdriver.Chrome(options=options)
 
+# récupère les corrections si il y en a
 if os.path.isfile("corrections.pkl"):
     corrections = pickle.load(open("corrections.pkl", "rb"))
 else:
     corrections = {}
 
+# initialisation du module de couleur
 colorama.init()
 
+# va sur duolingo.com
 driver.get("https://www.duolingo.com/")
 wait = WebDriverWait(driver, 600)
 
+# information
 print(Fore.YELLOW + 'If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme' + Style.RESET_ALL)
 
+# récupère les cookies si besoin
 if os.path.isfile("exported-cookies.json"):
     with open('exported-cookies.json') as json_file:
         cookies = json.loads(json_file.read())
@@ -636,47 +649,66 @@ if os.path.isfile("exported-cookies.json"):
             driver.add_cookie(cookie)
         driver.get("https://www.duolingo.com/")
 
+# demande si l'user est connecté
 input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
 
+# demande quel exercice il faut résoudre
 choixExo = input(
-    Fore.BLUE + 'Press\n• 1 to resolve lessons\n• 2 to resolve the story named "Le nouveau professeur"\n• 3 to resolve the story named "La fête 1/2"' + Style.RESET_ALL)
+    Fore.BLUE + 'Press\n• 1 to resolve lessons\n• 2 to resolve the story named "Le nouveau professeur"\n• 3 to resolve the story named "La fête 1/2"\n• 4 to print all the corrections of the mistakes' + Style.RESET_ALL)
 
-if choixExo in '123':
+# vérifie que la réponse est correct
+if choixExo in ['1', '2', '3', '4']:
     choixExo = int(choixExo)
 else:
-    raise Exception(Fore.RED + 'Please choose 1,2 or 3' + Style.RESET_ALL)
+    raise Exception(Fore.RED + 'Please choose 1,2,3 or 4' + Style.RESET_ALL)
 
-repeat = input(
-    Fore.BLUE + 'Press enter to resolve lessons endlessly or type the number of lessons you want to do' + Style.RESET_ALL)
+if choixExo != 4:
+    # demande le nombre de répétition
+    repeat = input(
+        Fore.BLUE + 'Press enter to resolve lessons endlessly or type the number of lessons you want to do' + Style.RESET_ALL)
 
-if repeat == '':
-    repeat = -3
-else:
-    try:
-        repeat = int(repeat)
-    except:
-        raise Exception(
-            Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
+    # traitement de la rponse
+    if repeat == '':
+        repeat = -3
+    else:
+        try:
+            repeat = int(repeat)
+        except:
+            raise Exception(
+                Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
 
+# nombre de lecon fini
 countLesson = 0
 
+# resout des lecons
 if choixExo == 1:
     while countLesson != repeat:
+        print(countLesson)
         try:
             lecon()
         except:
             pass
 
+# resout l'hsitoire le nouveau professeur
 elif choixExo == 2:
     while countLesson != repeat:
+        print(countLesson)
         try:
             newTeacher()
         except:
             pass
 
+# resout l'histoire la fete 1/2
 elif choixExo == 3:
     while countLesson != repeat:
+        print(countLesson)
         try:
             party()
         except:
             pass
+
+# affiche les corrections des erreurs
+elif choixExo == 4:
+    for question, reponse in corrections.items():
+        print(question + ' => ' + reponse)
+    driver.close()

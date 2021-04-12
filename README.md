@@ -12,8 +12,8 @@ A bot to solve duolingo lessons (only lessons from french to english for the mom
 
 ## Connection with Google or Facebook
 1. Install [this extension](https://chrome.google.com/webstore/detail/cookiemanager-cookie-edit/hdhngoamekjhmnpenphenpaiindoinpo) in Google Chrome
-2. Go to [Duolingo](www.duolingo.com)
+2. Go to [Duolingo](https://www.duolingo.com/)
 3. Open Cookie Manager - Cookie Edit
 4. Select all the cookie
 5. Click on export
-6. It will download a file move this file in the folder of the bot
+6. It will download a file move it in the folder of the bot

@@ -479,7 +479,7 @@ def lecon():
     while True:
         time.sleep(0.5)
         # si c'est la fin
-        if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'answers-correct')]")) > 0:
+        if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'player-end-carousel')]")) > 0:
             enter()
             countLesson += 1
             break
@@ -582,6 +582,7 @@ def lecon():
                 # on clique sur une réponse aléatoire
                 random.choice(driver.find_elements_by_xpath(
                     "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+            enter()
         else:
             enter()
             pass

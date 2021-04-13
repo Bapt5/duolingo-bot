@@ -15,6 +15,10 @@ from colorama import Style
 import string
 
 
+# nombre de lecon fini
+countLesson = 0
+
+
 def passe(temps):
     time.sleep(temps)
     driver.find_element_by_xpath(
@@ -444,6 +448,8 @@ def lecon():
     global countLesson
     global corrections
 
+    fini = False
+
     driver.get("https://www.duolingo.com/learn")
     time.sleep(2)
 
@@ -476,25 +482,31 @@ def lecon():
             "//button[text()='Réviser']").click()
     time.sleep(1)
 
-    while True:
+    while fini == False:
         time.sleep(0.5)
-        # si c'est la fin
-        if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'player-end-carousel')]")) > 0:
-            enter()
-            countLesson += 1
-            break
 
         while True:
             # récupère le titre de l'exercice
             title = driver.find_elements_by_xpath(
                 "//*[contains(@data-test, 'challenge-header')]/span")
-            if len(title) == 1:
-                title = title[0].get_attribute('innerHTML')
-                break
-            # si le titre et pas detecter on tapes sur entrer car il y a un msg d'encouragement
-            else:
-                enter()
-                time.sleep(0.5)
+            progressBar = driver.find_elements_by_xpath(
+                "//*[contains(@role, 'progressbar')]")
+            # si c'est la fin
+            if len(progressBar) == 1:
+                if float(progressBar[0].get_attribute('aria-valuenow')) == 1:
+                    wait.until(EC.presence_of_element_located((
+                        By.XPATH, "//*[contains(@data-test, 'player-end-carousel')]")))
+                    enter()
+                    countLesson += 1
+                    fini = True
+                    break
+                elif len(title) == 1:
+                    title = title[0].get_attribute('innerHTML')
+                    break
+                # si le titre et pas detecter on tapes sur entrer car il y a un msg d'encouragement
+                else:
+                    enter()
+                    time.sleep(0.5)
 
         # detecte l'exercice
         # passe si c un exercice de comprehension ou d'expression orale
@@ -531,8 +543,11 @@ def lecon():
                 # traduction
                 result = GoogleTranslator(
                     source='auto', target=langue).translate(phrase)
-            # renvoie du resultat
-            input.send_keys(result)
+            if input.is_enabled:
+                # renvoie du resultat
+                input.send_keys(result)
+            else:
+                pass
             enter()
         elif 'Écris' in title and '«' in title:
             phrase = title[title.find('«') + 7: title.find('»') - 6]
@@ -552,8 +567,11 @@ def lecon():
                 # traduction
                 result = GoogleTranslator(
                     source='auto', target=langue).translate(phrase)
-            # renvoie du resultat
-            input.send_keys(result)
+            if input.is_enabled:
+                # renvoie du resultat
+                input.send_keys(result)
+            else:
+                pass
             enter()
         elif 'Complète' in title:
             driver.find_element_by_xpath(
@@ -605,13 +623,13 @@ def lecon():
                 for element in correctionSpan:
                     correction += element.get_attribute('innerHTML')
             # on enlève tous les espaces et les ponctuations avant
-            for i in range(len(reponse)):
-                if reponse[i] in string.ascii_letters:
+            for i in range(len(correction)):
+                if correction[i] in string.ascii_letters:
                     first_letter = i
                     break
-            reponse = reponse[first_letter:len(reponse) - 1]
+            correction = correction[first_letter:len(correction)]
             # on l'ajoute dans le dictionnaire
-            corrections[question] = reponse
+            corrections[phrase] = correction
             pickle.dump(corrections, open("corrections.pkl", "wb"))
             enter()
         elif len(correct) > 0:
@@ -678,35 +696,32 @@ if choixExo != 4:
             raise Exception(
                 Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
 
-# nombre de lecon fini
-countLesson = 0
-
 # resout des lecons
 if choixExo == 1:
     while countLesson != repeat:
-        print(countLesson)
         try:
             lecon()
         except:
             pass
+        print(countLesson)
 
 # resout l'hsitoire le nouveau professeur
 elif choixExo == 2:
     while countLesson != repeat:
-        print(countLesson)
         try:
             newTeacher()
         except:
             pass
+        print(countLesson)
 
 # resout l'histoire la fete 1/2
 elif choixExo == 3:
     while countLesson != repeat:
-        print(countLesson)
         try:
             party()
         except:
             pass
+        print(countLesson)
 
 # affiche les corrections des erreurs
 elif choixExo == 4:

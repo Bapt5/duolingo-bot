@@ -466,12 +466,10 @@ def lecon():
 
     # choisi aléatoirement une lecon
     lecons = driver.find_elements_by_xpath(
-        "//*[contains(@data-test, 'skill')]")
-    for i in lecons:
-        lecon = random.choice(lecons)
-        if lecon.get_attribute("data-test") == "skill":
-            lecon.click()
-            break
+        "//*[@data-test='skill']")
+    lecon = random.choice(lecons)
+    lecon.click()
+
     time.sleep(1)
     # clique sur commencer ou reviser
     try:
@@ -564,6 +562,8 @@ def lecon():
                     langue = 'en'
                 elif 'français' in chaineLangue:
                     langue = 'fr'
+                else:
+                    langue = 'en'
                 # traduction
                 result = GoogleTranslator(
                     source='auto', target=langue).translate(phrase)

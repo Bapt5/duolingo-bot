@@ -471,13 +471,16 @@ def lecon():
     lecon.click()
 
     time.sleep(1)
-    # clique sur commencer ou reviser
-    try:
-        driver.find_element_by_xpath(
-            "//button[text()='COMMENCER']").click()
-    except:
-        driver.find_element_by_xpath(
-            "//button[text()='Réviser']").click()
+    # clique sur commencer, restaurer ou reviser
+    if len(driver.find_elements_by_xpath("//button[text()='COMMENCER']")) == 1:
+        driver.find_element_by_xpath("//button[text()='COMMENCER']").click()
+    elif len(driver.find_elements_by_xpath("//button[text()='Réviser']")) == 1:
+        driver.find_element_by_xpath("//button[text()='Réviser']").click()
+    elif len(driver.find_elements_by_xpath("//button[text() = 'Restaurer']")) == 1:
+        driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
+    else:
+        raise Exception(
+            Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)
     time.sleep(1)
 
     while fini == False:

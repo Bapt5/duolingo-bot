@@ -707,6 +707,7 @@ if choixExo == 1:
         except:
             pass
         print(countLesson)
+    driver.close()
 
 # resout l'hsitoire le nouveau professeur
 elif choixExo == 2:
@@ -716,6 +717,7 @@ elif choixExo == 2:
         except:
             pass
         print(countLesson)
+    driver.close()
 
 # resout l'histoire la fete 1/2
 elif choixExo == 3:
@@ -725,6 +727,7 @@ elif choixExo == 3:
         except:
             pass
         print(countLesson)
+    driver.close()
 
 # affiche les corrections des erreurs
 elif choixExo == 4:

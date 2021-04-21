@@ -29,6 +29,13 @@ def newTeacher():
     global countLesson
 
     driver.get("https://www.duolingo.com/stories")
+
+    # verifie que le language choisi est compatible
+    titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
+    if not 'anglais' in titre:
+        raise Exception(
+            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
+
     time.sleep(4)
     driver.find_element_by_xpath(
         "//a[@href='/stories/en-fr-new-teacher']").click()
@@ -239,6 +246,13 @@ def party():
     global countLesson
 
     driver.get("https://www.duolingo.com/stories")
+
+    # verifie que le language choisi est compatible
+    titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
+    if not 'anglais' in titre:
+        raise Exception(
+            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
+
     time.sleep(4)
     driver.find_element_by_xpath(
         "//a[@href='/stories/en-fr-the-party-1']").click()
@@ -458,12 +472,6 @@ def lecon():
     if(len(amis) > 0):
         amis[0].click()
 
-    # verifie que le language choisi est compatible
-    titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
-    if not 'anglais' in titre:
-        raise Exception(
-            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
-
     # choisi aléatoirement une lecon
     lecons = driver.find_elements_by_xpath(
         "//*[@data-test='skill']")
@@ -565,8 +573,12 @@ def lecon():
                     langue = 'en'
                 elif 'français' in chaineLangue:
                     langue = 'fr'
+                elif 'espagnol' in chaineLangue:
+                    langue = 'es'
+                elif 'allemand' in chaineLangue:
+                    langue = 'de'
                 else:
-                    langue = 'en'
+                    langue = 'fr'
                 # traduction
                 result = GoogleTranslator(
                     source='auto', target=langue).translate(phrase)
@@ -698,7 +710,7 @@ if choixExo != 4:
             driver.get("https://www.duolingo.com/")
 
     # demande si l'user est connecté
-    input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
+    input(Fore.GREEN + 'Press enter when you are logged in' + Style.RESET_ALL)
 
 # resout des lecons
 if choixExo == 1:

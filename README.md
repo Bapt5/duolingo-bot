@@ -1,5 +1,5 @@
 # Duolingo-Bot
-A bot to solve duolingo lessons (only lessons from french to english for the moment)
+A bot to solve duolingo lessons (only lessons for french people)
 
 ## Requirements
 * python >= 3.7

@@ -639,11 +639,6 @@ def lecon():
             enter()
 
 
-# demarre chromedriver
-options = webdriver.ChromeOptions()
-options.add_argument('--user-data-dir=./data')
-driver = webdriver.Chrome(options=options)
-
 # récupère les corrections si il y en a
 if os.path.isfile("corrections.pkl"):
     corrections = pickle.load(open("corrections.pkl", "rb"))
@@ -653,26 +648,6 @@ else:
 # initialisation du module de couleur
 colorama.init()
 
-# va sur duolingo.com
-driver.get("https://www.duolingo.com/")
-wait = WebDriverWait(driver, 600)
-
-# information
-print(Fore.YELLOW + 'If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme' + Style.RESET_ALL)
-
-# récupère les cookies si besoin
-if os.path.isfile("exported-cookies.json"):
-    with open('exported-cookies.json') as json_file:
-        cookies = json.loads(json_file.read())
-        for cookie in cookies:
-            for key in cookie.copy():
-                if key != 'name' and key != 'value':
-                    cookie.pop(key)
-            driver.add_cookie(cookie)
-        driver.get("https://www.duolingo.com/")
-
-# demande si l'user est connecté
-input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
 
 # demande quel exercice il faut résoudre
 choixExo = input(
@@ -698,6 +673,32 @@ if choixExo != 4:
         except:
             raise Exception(
                 Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
+
+    # demarre chromedriver
+    options = webdriver.ChromeOptions()
+    options.add_argument('--user-data-dir=./data')
+    driver = webdriver.Chrome(options=options)
+
+    # va sur duolingo.com
+    driver.get("https://www.duolingo.com/")
+    wait = WebDriverWait(driver, 600)
+
+    # information
+    print(Fore.YELLOW + 'If you want to login with google or facebook go to https://github.com/Bapt5/duolingo-bot#readme' + Style.RESET_ALL)
+
+    # récupère les cookies si besoin
+    if os.path.isfile("exported-cookies.json"):
+        with open('exported-cookies.json') as json_file:
+            cookies = json.loads(json_file.read())
+            for cookie in cookies:
+                for key in cookie.copy():
+                    if key != 'name' and key != 'value':
+                        cookie.pop(key)
+                driver.add_cookie(cookie)
+            driver.get("https://www.duolingo.com/")
+
+    # demande si l'user est connecté
+    input(Fore.GREEN + 'Press enter when you are logged in and you have selected english' + Style.RESET_ALL)
 
 # resout des lecons
 if choixExo == 1:
@@ -733,4 +734,3 @@ elif choixExo == 3:
 elif choixExo == 4:
     for question, reponse in corrections.items():
         print(question + ' => ' + reponse)
-    driver.close()

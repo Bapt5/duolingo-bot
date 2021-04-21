@@ -8,6 +8,7 @@ Only lessons for french people who want to resolve english, spanish and german l
 * the latest version of Google Chrome
 
 ## Usage
+* clone this repository
 * `python3 app.py`
 
 ## Connection with Google or Facebook

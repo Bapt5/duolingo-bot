@@ -1,5 +1,6 @@
 # Duolingo-Bot
-A bot to solve duolingo lessons (only lessons for french people)
+A bot to solve duolingo lessons <br>
+Only lessons for french people who want to resolve english, spanish and german lessons ⚠Create an issue for more language⚠
 
 ## Requirements
 * python >= 3.7
@@ -7,7 +8,6 @@ A bot to solve duolingo lessons (only lessons for french people)
 * the latest version of Google Chrome
 
 ## Usage
-* Disable the messages of encouragement
 * `python3 app.py`
 
 ## Connection with Google or Facebook

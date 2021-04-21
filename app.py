@@ -29,16 +29,18 @@ def newTeacher():
     global countLesson
 
     driver.get("https://www.duolingo.com/stories")
-
-    # verifie que le language choisi est compatible
-    titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
-    if not 'anglais' in titre:
-        raise Exception(
-            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
-
-    time.sleep(4)
-    driver.find_element_by_xpath(
-        "//a[@href='/stories/en-fr-new-teacher']").click()
+    time.sleep(2)
+    story = driver.find_elements_by_xpath(
+        "//a[@href='/stories/en-fr-new-teacher']")
+    if len(story) == 1:
+        story[0].click()
+    else:
+        try:
+            driver.find_element_by_xpath("//span[text()='Anglais']").click()
+            newTeacher()
+        except:
+            raise Exception(
+                Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
     try:
         passe(2)  # new teacher
     except:
@@ -246,16 +248,17 @@ def party():
     global countLesson
 
     driver.get("https://www.duolingo.com/stories")
-
-    # verifie que le language choisi est compatible
-    titre = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
-    if not 'anglais' in titre:
-        raise Exception(
-            Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
-
     time.sleep(4)
-    driver.find_element_by_xpath(
-        "//a[@href='/stories/en-fr-the-party-1']").click()
+    story = driver.find_elements_by_xpath(
+        "//a[@href='/stories/en-fr-the-party-1']")
+    if len(story) == 1:
+        story[0].click()
+    else:
+        try:
+            driver.find_element_by_xpath("//span[text()='Anglais']").click()
+        except:
+            raise Exception(
+                Fore.RED + "The chosen language must be english" + Style.RESET_ALL)
     try:
         passe(2)  # the party
     except:
@@ -486,6 +489,9 @@ def lecon():
         driver.find_element_by_xpath("//button[text()='Réviser']").click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'Restaurer']")) == 1:
         driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
+    elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
+        print('Blocked lesson')
+        lecon()
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)
@@ -717,6 +723,11 @@ if choixExo == 1:
     while countLesson != repeat:
         try:
             lecon()
+        except Exception as e:
+            if 'Fail to start the lesson' in e.args[0]:
+                raise e
+            else:
+                pass
         except:
             pass
         print(countLesson)
@@ -727,6 +738,11 @@ elif choixExo == 2:
     while countLesson != repeat:
         try:
             newTeacher()
+        except Exception as e:
+            if 'The chosen language must be english' in e.args[0]:
+                raise e
+            else:
+                pass
         except:
             pass
         print(countLesson)
@@ -737,6 +753,11 @@ elif choixExo == 3:
     while countLesson != repeat:
         try:
             party()
+        except Exception as e:
+            if 'The chosen language must be english' in e.args[0]:
+                raise e
+            else:
+                pass
         except:
             pass
         print(countLesson)

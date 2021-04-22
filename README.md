@@ -5,7 +5,8 @@ Only lessons for french people who want to resolve english, spanish and german l
 ## Requirements
 * python >= 3.7
 * `pip install -r requirements.txt`
-* the latest version of Google Chrome
+* This project uses Selenium and automatically downloads the correct driver for your Chrome version.
+⚠️ So just make sure to have Google Chrome installed.
 
 ## Usage
 * clone this repository

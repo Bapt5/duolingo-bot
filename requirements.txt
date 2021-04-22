@@ -2,3 +2,4 @@ selenium
 deep-translator
 colorama
 pickle-mixin
+chromedriver-autoinstaller

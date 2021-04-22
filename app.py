@@ -13,6 +13,7 @@ import colorama
 from colorama import Fore
 from colorama import Style
 import string
+import chromedriver_autoinstaller
 
 
 # nombre de lecon fini
@@ -666,7 +667,6 @@ else:
 # initialisation du module de couleur
 colorama.init()
 
-
 # demande quel exercice il faut résoudre
 choixExo = input(
     Fore.BLUE + 'Press\n• 1 to resolve lessons\n• 2 to resolve the story named "Le nouveau professeur"\n• 3 to resolve the story named "La fête 1/2"\n• 4 to print all the corrections of the mistakes' + Style.RESET_ALL)
@@ -693,8 +693,9 @@ if choixExo != 4:
                 Fore.RED + 'Please type enter or a number' + Style.RESET_ALL)
 
     # demarre chromedriver
+    chromedriver_autoinstaller.install(True)
     options = webdriver.ChromeOptions()
-    options.add_argument('--user-data-dir=./data')
+    options.add_argument('--user-data-dir=' + os.getcwd() + '\data')
     driver = webdriver.Chrome(options=options)
 
     # va sur duolingo.com

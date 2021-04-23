@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import random
 from deep_translator import GoogleTranslator
@@ -14,6 +15,7 @@ from colorama import Fore
 from colorama import Style
 import string
 import chromedriver_autoinstaller
+import re
 
 
 # nombre de lecon fini
@@ -476,10 +478,21 @@ def lecon():
     if(len(amis) > 0):
         amis[0].click()
 
+    # recuperation de la langue de l'exercice
+    title = driver.find_element_by_xpath("//title").get_attribute('innerHTML')
+    langueEx = re.match(r"(.*d'apprendre l(a |e |'))(?P<langue>.+$)",
+                        title).group('langue')
+    langueEx = (GoogleTranslator(
+        source='auto', target='en').translate(langueEx)).lower()
+    if langueEx not in corrections:
+        corrections[langueEx] = {}
+        pickle.dump(corrections, open("corrections.pkl", "wb"))
+
     # choisi aléatoirement une lecon
     lecons = driver.find_elements_by_xpath(
         "//*[@data-test='skill']")
     lecon = random.choice(lecons)
+    ActionChains(driver).move_to_element(lecon).perform()
     lecon.click()
 
     time.sleep(1)
@@ -492,7 +505,7 @@ def lecon():
         driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
-        lecon()
+        pass
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)
@@ -551,8 +564,8 @@ def lecon():
             input = driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'challenge-translate-input')]")
             # si la phrase est deja dans le dictionnaire
-            if phrase in corrections:
-                result = corrections[phrase]
+            if phrase in corrections[langueEx]:
+                result = corrections[langueEx][phrase]
             else:
                 # cherche la langue
                 langue = input.get_attribute("lang")
@@ -571,24 +584,22 @@ def lecon():
             input = driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'challenge-text-input')]")  # !!!si erreur challenge translate input
             # si la phrase est deja dans le dictionnaire
-            if phrase in corrections:
-                result = corrections[phrase]
+            if phrase in corrections[langueEx]:
+                result = corrections[langueEx][phrase]
             else:
                 # cherche la langue
                 chaineLangue = input.get_attribute("placeholder")
-                if 'anglais' in chaineLangue:
-                    langue = 'en'
-                elif 'français' in chaineLangue:
-                    langue = 'fr'
-                elif 'espagnol' in chaineLangue:
-                    langue = 'es'
-                elif 'allemand' in chaineLangue:
-                    langue = 'de'
+                langue = re.match(r'(.*en )(?P<langue>.+$)',
+                                  chaineLangue).group('langue')
+                langue = (GoogleTranslator(
+                    source='auto', target='en').translate(langue)).lower()
+                if langue in langs_dict:
+                    lang = langs_dict[langue]
                 else:
-                    langue = 'fr'
+                    lang = 'fr'
                 # traduction
                 result = GoogleTranslator(
-                    source='auto', target=langue).translate(phrase)
+                    source='auto', target=lang).translate(phrase)
             if input.is_enabled:
                 # renvoie du resultat
                 input.send_keys(result)
@@ -609,11 +620,11 @@ def lecon():
                 phrase = driver.find_element_by_xpath(
                     "//*[contains(@class, '_3-JBe')]").get_attribute("innerHTML")
             # si la phrase est deja dans le dictionnaire
-            if phrase in corrections:
+            if phrase in corrections[langueEx]:
                 # on essaie de cliquer sur cette phrase
                 try:
                     driver.find_element_by_xpath(
-                        f"//*[contains(@data-test, 'challenge-judge-text') and text()={corrections[phrase]}]").click()
+                        f"//*[contains(@data-test, 'challenge-judge-text') and contains(text(),'{corrections[langueEx][phrase]}')").click()
                 # sinon on clique sur une réponse aléatoire
                 except:
                     random.choice(driver.find_elements_by_xpath(
@@ -651,7 +662,7 @@ def lecon():
                     break
             correction = correction[first_letter:len(correction)]
             # on l'ajoute dans le dictionnaire
-            corrections[phrase] = correction
+            corrections[langueEx][phrase] = correction
             pickle.dump(corrections, open("corrections.pkl", "wb"))
             enter()
         elif len(correct) > 0:
@@ -698,6 +709,8 @@ if choixExo != 4:
     options.add_argument('--user-data-dir=' + os.getcwd() + '\data')
     driver = webdriver.Chrome(options=options)
 
+    langs_dict = GoogleTranslator.get_supported_languages(as_dict=True)
+
     # va sur duolingo.com
     driver.get("https://www.duolingo.com/")
     wait = WebDriverWait(driver, 600)
@@ -722,15 +735,15 @@ if choixExo != 4:
 # resout des lecons
 if choixExo == 1:
     while countLesson != repeat:
-        try:
-            lecon()
-        except Exception as e:
-            if 'Fail to start the lesson' in e.args[0]:
-                raise e
-            else:
-                pass
-        except:
-            pass
+        # try:
+        lecon()
+        # except Exception as e:
+        #     if 'Fail to start the lesson' in e.args[0]:
+        #         raise e
+        #     else:
+        #         pass
+        # except:
+        #     pass
         print(countLesson)
     driver.close()
 
@@ -766,5 +779,8 @@ elif choixExo == 3:
 
 # affiche les corrections des erreurs
 elif choixExo == 4:
-    for question, reponse in corrections.items():
-        print(question + ' => ' + reponse)
+    for langue, dico in corrections.items():
+        print(langue)
+        for question, reponse in dico.items():
+            print(question + ' => ' + reponse)
+        print()

@@ -735,15 +735,15 @@ if choixExo != 4:
 # resout des lecons
 if choixExo == 1:
     while countLesson != repeat:
-        # try:
-        lecon()
-        # except Exception as e:
-        #     if 'Fail to start the lesson' in e.args[0]:
-        #         raise e
-        #     else:
-        #         pass
-        # except:
-        #     pass
+        try:
+            lecon()
+        except Exception as e:
+            if 'Fail to start the lesson' in e.args[0]:
+                raise e
+            else:
+                pass
+        except:
+            pass
         print(countLesson)
     driver.close()
 

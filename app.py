@@ -505,7 +505,7 @@ def lecon():
         driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
-        pass
+        raise Exception('Blocked lesson')
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)

@@ -13,7 +13,6 @@ import json
 import colorama
 from colorama import Fore
 from colorama import Style
-import string
 import chromedriver_autoinstaller
 import re
 
@@ -657,7 +656,7 @@ def lecon():
                     correction += element.get_attribute('innerHTML')
             # on enlève tous les espaces et les ponctuations avant
             for i in range(len(correction)):
-                if correction[i] in string.ascii_letters:
+                if correction[i].isalpha():
                     first_letter = i
                     break
             correction = correction[first_letter:len(correction)]

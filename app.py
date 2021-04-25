@@ -505,6 +505,9 @@ def lecon():
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
         raise Exception('Blocked lesson')
+    elif len(driver.find_elements_by_xpath("//button[text()=\"S'entraîner +0 XP\"]")) == 1:
+        print('Lesson without XP')
+        raise Exception('No XP')
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)
@@ -767,11 +770,6 @@ if choixExo == 1:
     while countLesson != repeat:
         try:
             lecon()
-        except Exception as e:
-            if 'Fail to start the lesson' in e.args[0]:
-                raise e
-            else:
-                pass
         except:
             pass
         print(countLesson)

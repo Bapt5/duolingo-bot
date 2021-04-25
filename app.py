@@ -605,6 +605,23 @@ def lecon():
             else:
                 pass
             enter()
+        elif 'Comment' in title and '«' in title:
+            phrase = title[title.find('«') + 7: title.find('»') - 6]
+            # si la phrase est deja dans le dictionnaire
+            if phrase in corrections[langueEx]:
+                # on essaie de cliquer sur cette phrase
+                try:
+                    driver.find_element_by_xpath(
+                        f"//span[text()='{corrections[langueEx][phrase]}']").click()
+                # sinon on clique sur une réponse aléatoire
+                except:
+                    random.choice(driver.find_elements_by_xpath(
+                        "//*[contains(@data-test, 'challenge-choice-card')]")).click()
+            else:
+                # on clique sur une réponse aléatoire
+                random.choice(driver.find_elements_by_xpath(
+                    "//*[contains(@data-test, 'challenge-choice-card')]")).click()
+            enter()
         elif 'Complète' in title:
             driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'player-toggle-keyboard')]").click()
@@ -623,7 +640,7 @@ def lecon():
                 # on essaie de cliquer sur cette phrase
                 try:
                     driver.find_element_by_xpath(
-                        f"//*[contains(@data-test, 'challenge-judge-text') and contains(text(),'{corrections[langueEx][phrase]}')").click()
+                        f"//*[contains(@data-test, 'challenge-judge-text') and contains(text(),'{corrections[langueEx][phrase]}')]").click()
                 # sinon on clique sur une réponse aléatoire
                 except:
                     random.choice(driver.find_elements_by_xpath(

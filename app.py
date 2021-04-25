@@ -641,10 +641,12 @@ def lecon():
             if len(driver.find_elements_by_xpath("//*[contains(@data-test, 'challenge-form-prompt')]")) > 0:
                 phrase = driver.find_element_by_xpath(
                     "//*[contains(@data-test, 'challenge-form-prompt')]").get_attribute("data-prompt")
+                trad = False
             # si le choix est donner la traduction
             elif len(driver.find_elements_by_xpath("//*[contains(@class, '_3-JBe')]")) > 0:
                 phrase = driver.find_element_by_xpath(
                     "//*[contains(@class, '_3-JBe')]").get_attribute("innerHTML")
+                trad = True
             # si la phrase est deja dans le dictionnaire
             if phrase in corrections[langueEx]:
                 # on essaie de cliquer sur cette phrase
@@ -655,7 +657,7 @@ def lecon():
                 except:
                     random.choice(driver.find_elements_by_xpath(
                         "//*[contains(@data-test, 'challenge-judge-text')]")).click()
-            else:
+            elif trad == True:
                 result = GoogleTranslator(
                     source='auto', target=langs_dict[langueEx]).translate(phrase)
                 # on essaie de cliquer sur la traduction
@@ -666,6 +668,9 @@ def lecon():
                 except:
                     random.choice(driver.find_elements_by_xpath(
                         "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+            else:
+                random.choice(driver.find_elements_by_xpath(
+                    "//*[contains(@data-test, 'challenge-judge-text')]")).click()
             enter()
         else:
             enter()

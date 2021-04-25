@@ -618,9 +618,16 @@ def lecon():
                     random.choice(driver.find_elements_by_xpath(
                         "//*[contains(@data-test, 'challenge-choice-card')]")).click()
             else:
-                # on clique sur une réponse aléatoire
-                random.choice(driver.find_elements_by_xpath(
-                    "//*[contains(@data-test, 'challenge-choice-card')]")).click()
+                result = GoogleTranslator(
+                    source='auto', target=langs_dict[langueEx]).translate(phrase)
+                # on essaie de cliquer sur la traduction
+                try:
+                    driver.find_element_by_xpath(
+                        f"//span[text()='{result}']").click()
+                # sinon on clique sur une réponse aléatoire
+                except:
+                    random.choice(driver.find_elements_by_xpath(
+                        "//*[contains(@data-test, 'challenge-choice-card')]")).click()
             enter()
         elif 'Complète' in title:
             driver.find_element_by_xpath(
@@ -640,15 +647,22 @@ def lecon():
                 # on essaie de cliquer sur cette phrase
                 try:
                     driver.find_element_by_xpath(
-                        f"//*[contains(@data-test, 'challenge-judge-text') and contains(text(),'{corrections[langueEx][phrase]}')]").click()
+                        f"//*[@data-test='challenge-judge-text' and text()='{corrections[langueEx][phrase]}']").click()
                 # sinon on clique sur une réponse aléatoire
                 except:
                     random.choice(driver.find_elements_by_xpath(
                         "//*[contains(@data-test, 'challenge-judge-text')]")).click()
             else:
-                # on clique sur une réponse aléatoire
-                random.choice(driver.find_elements_by_xpath(
-                    "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+                result = GoogleTranslator(
+                    source='auto', target=langs_dict[langueEx]).translate(phrase)
+                # on essaie de cliquer sur la traduction
+                try:
+                    driver.find_element_by_xpath(
+                        f"//*[@data-test='challenge-judge-text' and text()='{result}']").click()
+                # sinon on clique sur une réponse aléatoire
+                except:
+                    random.choice(driver.find_elements_by_xpath(
+                        "//*[contains(@data-test, 'challenge-judge-text')]")).click()
             enter()
         else:
             enter()

@@ -1,6 +1,6 @@
 # Duolingo-Bot
 A bot to solve duolingo lessons <br>
-Only lessons for french people who want to resolve english, spanish and german lessons ⚠Create an issue for more language⚠
+Only lessons for french
 
 ## Requirements
 * python >= 3.7

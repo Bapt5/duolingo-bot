@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from func_timeout import func_timeout, FunctionTimedOut
 import time
 import random
 from deep_translator import GoogleTranslator
@@ -469,8 +470,9 @@ def lecon():
 
     fini = False
 
-    driver.get("https://www.duolingo.com/learn")
-    time.sleep(2)
+    if driver.current_url != 'https://www.duolingo.com/learn':
+        driver.get("https://www.duolingo.com/learn")
+        time.sleep(2)
 
     # si il nous propose de partager a nos amis clique sur non merci
     amis = driver.find_elements_by_xpath("//span[text()='Non merci']")
@@ -528,6 +530,11 @@ def lecon():
                     wait.until(EC.presence_of_element_located((
                         By.XPATH, "//*[contains(@data-test, 'player-end-carousel')]")))
                     enter()
+                    timeout = time.time() + 3
+                    while (driver.current_url != 'https://www.duolingo.com/learn' and time.time() < timeout):
+                        enter()
+                        time.sleep(0.1)
+                    title = ''
                     countLesson += 1
                     fini = True
                     break
@@ -536,6 +543,7 @@ def lecon():
                     break
                 # si le titre et pas detecter on tapes sur entrer car il y a un msg d'encouragement
                 else:
+                    title = ''
                     enter()
                     time.sleep(0.5)
 
@@ -774,7 +782,9 @@ if choixExo != 4:
 if choixExo == 1:
     while countLesson != repeat:
         try:
-            lecon()
+            func_timeout(3 * 60, lecon)
+        except FunctionTimedOut:
+            print("Timeout security")
         except:
             pass
         print(countLesson)

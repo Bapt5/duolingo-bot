@@ -3,3 +3,4 @@ deep-translator
 colorama
 pickle-mixin
 chromedriver-autoinstaller
+func_timeout

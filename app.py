@@ -16,6 +16,7 @@ from colorama import Fore
 from colorama import Style
 import chromedriver_autoinstaller
 import re
+import traceback
 
 
 # nombre de lecon fini
@@ -506,7 +507,6 @@ def lecon():
         driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
-        raise Exception('Blocked lesson')
     elif len(driver.find_elements_by_xpath("//button[text()=\"S'entraîner +0 XP\"]")) == 1:
         print('Lesson without XP')
         raise Exception('No XP')
@@ -816,6 +816,7 @@ if choixExo == 1:
         except FunctionTimedOut:
             print("Timeout security")
         except:
+            traceback.print_exc()
             pass
         print(countLesson)
     driver.close()
@@ -829,8 +830,10 @@ elif choixExo == 2:
             if 'The chosen language must be english' in e.args[0]:
                 raise e
             else:
+                traceback.print_exc()
                 pass
         except:
+            traceback.print_exc()
             pass
         print(countLesson)
     driver.close()
@@ -844,8 +847,10 @@ elif choixExo == 3:
             if 'The chosen language must be english' in e.args[0]:
                 raise e
             else:
+                traceback.print_exc()
                 pass
         except:
+            traceback.print_exc()
             pass
         print(countLesson)
     driver.close()

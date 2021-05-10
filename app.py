@@ -593,6 +593,8 @@ def lecon():
             # cherhe l'input
             input = driver.find_element_by_xpath(
                 "//*[contains(@data-test, 'challenge-text-input')]")  # !!!si erreur challenge translate input
+            cases = driver.find_elements_by_xpath(
+                "//*[contains(@data-test, 'challenge-judge-text')]")
             # si la phrase est deja dans le dictionnaire
             if phrase in corrections[langueEx]:
                 result = corrections[langueEx][phrase]
@@ -610,11 +612,39 @@ def lecon():
                 # traduction
                 result = GoogleTranslator(
                     source='auto', target=lang).translate(phrase)
-            if input.is_enabled:
-                # renvoie du resultat
-                input.send_keys(result)
+            # on verifie si il faut selectionner l'article
+            if len(cases) > 0:
+                # on separe les mots
+                listMots = result.split()
+                if len(listMots) > 1:
+                    # on essaie de cliquer sur cette article
+                    try:
+                        driver.find_element_by_xpath(
+                            f"//*[@data-test='challenge-judge-text' and text()='{listMots[0]}']").click()
+                    # sinon on clique sur une réponse aléatoire
+                    except:
+                        random.choice(driver.find_elements_by_xpath(
+                            "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+                    # on enlève l'article de la liste
+                    listMots.pop(0)
+                    # recreer le reste de la pharse
+                    resultText = ' '.join(listMots)
+                else:
+                    # si la reponse n'a pas d'article on choisi une reponse aléatoire
+                    random.choice(driver.find_elements_by_xpath(
+                        "//*[contains(@data-test, 'challenge-judge-text')]")).click()
+                    resultText = ' '.join(listMots)
+                if input.is_enabled:
+                    # renvoie du resultat
+                    input.send_keys(resultText)
+                else:
+                    pass
             else:
-                pass
+                if input.is_enabled:
+                    # renvoie du resultat
+                    input.send_keys(result)
+                else:
+                    pass
             enter()
         elif 'Comment' in title and '«' in title:
             phrase = title[title.find('«') + 7: title.find('»') - 6]

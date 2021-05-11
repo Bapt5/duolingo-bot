@@ -509,7 +509,6 @@ def lecon():
         print('Blocked lesson')
     elif len(driver.find_elements_by_xpath("//button[text()=\"S'entraîner +0 XP\"]")) == 1:
         print('Lesson without XP')
-        raise Exception('No XP')
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)

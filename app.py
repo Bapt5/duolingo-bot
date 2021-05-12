@@ -469,8 +469,6 @@ def lecon():
     global countLesson
     global corrections
 
-    fini = False
-
     if driver.current_url != 'https://www.duolingo.com/learn':
         driver.get("https://www.duolingo.com/learn")
         time.sleep(2)
@@ -507,14 +505,16 @@ def lecon():
         driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
+        return
     elif len(driver.find_elements_by_xpath("//button[text()=\"S'entraîner +0 XP\"]")) == 1:
         print('Lesson without XP')
+        return
     else:
         raise Exception(
             Fore.RED + "Fail to start the lesson" + Style.RESET_ALL)
     time.sleep(1)
 
-    while fini == False:
+    while True:
         time.sleep(0.5)
 
         while True:
@@ -538,8 +538,7 @@ def lecon():
                         enter()
                         time.sleep(0.1)
                     title = ''
-                    fini = True
-                    break
+                    return
                 elif len(title) == 1:
                     title = title[0].get_attribute('innerHTML')
                     break

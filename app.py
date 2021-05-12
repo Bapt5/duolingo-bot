@@ -526,15 +526,18 @@ def lecon():
             # si c'est la fin
             if len(progressBar) == 1:
                 if float(progressBar[0].get_attribute('aria-valuenow')) == 1:
-                    wait.until(EC.presence_of_element_located((
-                        By.XPATH, "//*[contains(@data-test, 'player-end-carousel')]")))
-                    enter()
+                    # tant que les xp n'ont pas été rajouté
+                    while len(driver.find_elements_by_xpath("//*[contains(@data-test, 'player-end-carousel')]")) == 0:
+                        enter()
+                        time.sleep(0.1)
+                    # ajoute une lecon
+                    countLesson += 1
                     timeout = time.time() + 3
+                    # tant que nous sommes pas sur la page d'acueil
                     while (driver.current_url != 'https://www.duolingo.com/learn' and time.time() < timeout):
                         enter()
                         time.sleep(0.1)
                     title = ''
-                    countLesson += 1
                     fini = True
                     break
                 elif len(title) == 1:

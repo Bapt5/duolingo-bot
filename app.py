@@ -498,11 +498,17 @@ def lecon():
     time.sleep(1)
     # clique sur commencer, restaurer ou reviser
     if len(driver.find_elements_by_xpath("//button[text()='COMMENCER']")) == 1:
-        driver.find_element_by_xpath("//button[text()='COMMENCER']").click()
+        start = driver.find_element_by_xpath("//button[text()='COMMENCER']")
+        ActionChains(driver).move_to_element(start).perform()
+        start.click()
     elif len(driver.find_elements_by_xpath("//button[text()='Réviser']")) == 1:
-        driver.find_element_by_xpath("//button[text()='Réviser']").click()
+        start = driver.find_element_by_xpath("//button[text()='Réviser']")
+        ActionChains(driver).move_to_element(start).perform()
+        start.click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'Restaurer']")) == 1:
-        driver.find_element_by_xpath("//button[text() = 'Restaurer']").click()
+        start = driver.find_element_by_xpath("//button[text() = 'Restaurer']")
+        ActionChains(driver).move_to_element(start).perform()
+        start.click()
     elif len(driver.find_elements_by_xpath("//button[text() = 'BLOQUÉ']")) == 1:
         print('Blocked lesson')
         return
